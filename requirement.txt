@@ -24,3 +24,10 @@ python-dotenv
 
 # WSGI Server for production
 gunicorn
+
+blinker
+click
+itsdangerous
+Jinja2
+MarkupSafe
+Werkzeug
