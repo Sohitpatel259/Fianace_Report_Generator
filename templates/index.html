@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Research Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .examples {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .example-tag {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin: 5px 5px 5px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .example-tag:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .generate-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .clear-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background: #d32f2f;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-section {
+            display: none;
+        }
+
+        .report-content {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .report-content h1,
+        .report-content h2,
+        .report-content h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .report-content h1 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .report-content h2 {
+            font-size: 1.4em;
+            color: #667eea;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #c62828;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .download-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .download-btn:hover {
+            background: #45a049;
+        }
+
+        .new-query-btn {
+            background: #2196F3;
+            color: white;
+        }
+
+        .new-query-btn:hover {
+            background: #0b7dda;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Financial Research Agent</h1>
+            <p>AI-Powered Financial Analysis & Research Reports</p>
+        </div>
+
+        <div class="card">
+            <div class="input-section">
+                <label for="query">Enter Your Research Query:</label>
+                <textarea 
+                    id="query" 
+                    placeholder="e.g., Analyze the impact of artificial intelligence on banking sector..."
+                ></textarea>
+                
+                <div class="examples">
+                    <strong>Example queries:</strong><br>
+                    <span class="example-tag" onclick="setExample('Analyze the current state and future implications of artificial Intelligence in Finance')">AI in Finance</span>
+                    <span class="example-tag" onclick="setExample('Applications of Gen AI in Financial Services')">Gen AI Applications</span>
+                    <span class="example-tag" onclick="setExample('Impact of blockchain technology on traditional banking')">Blockchain & Banking</span>
+                    <span class="example-tag" onclick="setExample('Future of digital payments and fintech innovations')">Digital Payments</span>
+                    <span class="example-tag" onclick="setExample('ESG investing trends and sustainable finance')">ESG Investing</span>
+                </div>
+            </div>
+
+            <div class="error-message" id="error"></div>
+
+            <div class="button-group">
+                <button class="generate-btn" onclick="generateReport()">
+                    🚀 Generate Report
+                </button>
+                <button class="clear-btn" onclick="clearForm()">
+                    🗑️ Clear
+                </button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="color: white; font-size: 1.2em;">Researching and generating your report...</p>
+            <p style="color: white; opacity: 0.8;">This may take 30-60 seconds</p>
+        </div>
+
+        <div class="card result-section" id="result">
+            <h2 style="margin-bottom: 20px; color: #667eea;">📄 Research Report</h2>
+            <div class="report-content" id="reportContent"></div>
+            
+            <div class="action-buttons">
+                <button class="download-btn" onclick="downloadReport()">
+                    ⬇️ Download Report
+                </button>
+                <button class="new-query-btn" onclick="newQuery()">
+                    ➕ New Query
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setExample(text) {
+            document.getElementById('query').value = text;
+        }
+
+        function clearForm() {
+            document.getElementById('query').value = '';
+            document.getElementById('error').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error').style.display = 'none';
+        }
+
+        async function generateReport() {
+            const query = document.getElementById('query').value.trim();
+            
+            if (!query) {
+                showError('Please enter a research query');
+                return;
+            }
+
+            hideError();
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.querySelector('.generate-btn').disabled = true;
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query: query })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('reportContent').textContent = data.report;
+                    document.getElementById('result').style.display = 'block';
+                    
+                    // Scroll to result
+                    document.getElementById('result').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } else {
+                    showError(data.error || 'Failed to generate report');
+                }
+            } catch (error) {
+                showError('Network error: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.querySelector('.generate-btn').disabled = false;
+            }
+        }
+
+        function downloadReport() {
+            const content = document.getElementById('reportContent').textContent;
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'financial_research_report_' + new Date().getTime() + '.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function newQuery() {
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('query').value = '';
+            document.getElementById('query').focus();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Allow Enter+Ctrl to submit
+        document.getElementById('query').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                generateReport();
+            }
+        });
+    </script>
+</body>
+</html>
