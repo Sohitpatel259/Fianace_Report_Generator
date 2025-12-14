@@ -161,4 +161,4 @@ def health():
 
 if __name__ == '__main__':
     # Allows `flask run` or `python app.py`
-    app.run(debug=True)
+    app.run()

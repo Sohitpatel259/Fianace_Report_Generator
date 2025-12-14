@@ -27,3 +27,4 @@ Finance_agent.ipynb
 # OS files
 .DS_Store
 *.log
+.env*.local
