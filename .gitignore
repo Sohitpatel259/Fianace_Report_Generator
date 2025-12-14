@@ -1,15 +1,29 @@
 # Ignore virtual environment folders
 venv/
 env/
+.venv
+ENV/
 
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
 
 .vscode/
 .vscode
 *.vscode
 
-# Ignore Python bytecode
-*.pyc
 # Ignore environment variables and secrets
 .env
 *.env
+
+# Vercel
+.vercel
+
+# Notebooks
+*.ipynb_checkpoints
+Finance_agent.ipynb
+
+# OS files
+.DS_Store
+*.log

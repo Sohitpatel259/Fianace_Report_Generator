@@ -1,0 +1,7 @@
+Flask==3.0.0
+agno
+groq
+duckduckgo-search
+newspaper4k
+python-dotenv
+Werkzeug==3.0.0
